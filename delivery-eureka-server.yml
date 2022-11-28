@@ -11,4 +11,5 @@ eureka:
     #Nada mais do que a localização do Eureka Server, já que essa aplicação vai se auto registrar.
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
   server:
-    #Tempo em milissegundos que o Eureka Server i
+    #Tempo em milissegundos que o Eureka Server irá esperar entre as sincronizações com os clientes.
+    wait-time-in-ms-when-sync-empty: 3000
