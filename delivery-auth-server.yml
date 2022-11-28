@@ -1,73 +1,51 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+server:
+  port: 9092
 
-	<groupId>com.coderef</groupId>
-	<artifactId>delivery-eureka-server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+eureka:
+  instance:
+    hostname: localhost
+    port: 9091
+  client:
+    registerWithEureka: true
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
+  server:
+    wait-time-in-ms-when-sync-empty: 3000
 
-	<name>delivery-eureka-server</name>
-	<description>Eureka Server</description>
+security:
+    oauth2:
+        client:
+	    #Tempo, em segundos, de duração do token de acesso.
+            access-token-validity-seconds: 1800
+	    #Qual o tipo do pedido de concessão de acesso. Se o Client vai solicitar um token utilizando usuário e senha ou se vai renovar um token já existente.
+            authorized-grant-types: password,refresh_token
+	    #Identificador único que será usado pelo Client para solicitar concessão de acesso.
+            client-id: coderef
+	    #Uma senha usada em conjunto com o client-id como autenticação básica do client que está tentando obter um token de acesso.
+            client-secret: $2a$10$p9Pk0fQNAQSesI4vuvKA0OZanDD2
+	    #Identificador dos recursos disponíveis, se especificado aqui também deve ser especificado no servidor de recursos.
+            resource-ids: resources
+	    #Os escopos que o Client terá acesso.
+            scope: read,write
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.4.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
-		<spring-cloud.version>Dalston.SR1</spring-cloud.version>
-	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-eureka-server</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>${spring-cloud.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-</project>
+spring:
+    datasource:
+    	#Um arquivo .sql que será executado na inicialização da aplicação, ele será executado após a propriedade schema.
+        data: classpath:/sql/data.sql
+        driver-class-name: com.mysql.jdbc.Driver
+        password: '1234'
+        platform: mysql
+	#Arquivo com a estrutura do banco de dados. Como as classes que mapeiam os dados de segurança então nas bibliotecas do Spring, elas não são criadas automaticamente pelo JPA.
+        schema: classpath:/sql/schema.sql
+        url: jdbc:mysql://localhost/oauth?verifyServerCertificate=false&useSSL=false&requireSSL=false
+        username: root
+    jpa:
+    	#Classe que possui a implementação que possibilita a geração SQL para a plataforma de persistência especificada, para que todo o SQL gerado pelo JPA seja compatível com o banco de dados escolhido.
+        database-platform: org.hibernate.dialect.MySQLDialect
+	#Informar se durante a inicialização será necessário gerar as estruturas do banco de dados com base nas anotações JPA.
+        generate-ddl: false
+        hibernate:
+            ddl-auto: none
+	#Se habilitada, será gerado um log com o sql gerado pelo JPA. Use somente em Homologação.
+        show-sql: true
