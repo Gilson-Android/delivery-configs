@@ -16,36 +16,25 @@ eureka:
 security:
     oauth2:
         client:
-	    #Tempo, em segundos, de duração do token de acesso.
             access-token-validity-seconds: 1800
-	    #Qual o tipo do pedido de concessão de acesso. Se o Client vai solicitar um token utilizando usuário e senha ou se vai renovar um token já existente.
             authorized-grant-types: password,refresh_token
-	    #Identificador único que será usado pelo Client para solicitar concessão de acesso.
             client-id: coderef
-	    #Uma senha usada em conjunto com o client-id como autenticação básica do client que está tentando obter um token de acesso.
             client-secret: $2a$10$p9Pk0fQNAQSesI4vuvKA0OZanDD2
-	    #Identificador dos recursos disponíveis, se especificado aqui também deve ser especificado no servidor de recursos.
             resource-ids: resources
-	    #Os escopos que o Client terá acesso.
             scope: read,write
 
 spring:
     datasource:
-    	#Um arquivo .sql que será executado na inicialização da aplicação, ele será executado após a propriedade schema.
         data: classpath:/sql/data.sql
         driver-class-name: com.mysql.jdbc.Driver
         password: '12345678'
         platform: mysql
-	#Arquivo com a estrutura do banco de dados. Como as classes que mapeiam os dados de segurança então nas bibliotecas do Spring, elas não são criadas automaticamente pelo JPA.
         schema: classpath:/sql/schema.sql
         url: jdbc:mysql://localhost/oauth?verifyServerCertificate=false&useSSL=false&requireSSL=false
         username: root
     jpa:
-    	#Classe que possui a implementação que possibilita a geração SQL para a plataforma de persistência especificada, para que todo o SQL gerado pelo JPA seja compatível com o banco de dados escolhido.
         database-platform: org.hibernate.dialect.MySQLDialect
-	#Informar se durante a inicialização será necessário gerar as estruturas do banco de dados com base nas anotações JPA.
         generate-ddl: false
         hibernate:
             ddl-auto: none
-	#Se habilitada, será gerado um log com o sql gerado pelo JPA. Use somente em Homologação.
         show-sql: true
