@@ -1,0 +1,37 @@
+server:
+  port: 9093
+
+eureka:
+  instance:
+  # Parametro apenas para ser reutilizado em userInfoUri.
+    hostname: localhost
+    port: 9091
+  client:
+    registerWithEureka: true
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
+  server:
+    wait-time-in-ms-when-sync-empty: 3000
+
+spring:
+    datasource:
+        driver-class-name: com.mysql.jdbc.Driver
+        password: '12345678'
+        platform: mysql
+        url: jdbc:mysql://localhost/delivery-order?verifyServerCertificate=false&useSSL=false&requireSSL=false
+        username: sa
+    jpa:
+        database-platform: org.hibernate.dialect.MySQLDialect
+        generate-ddl: false
+        hibernate:
+            ddl-auto: create
+        show-sql: true
+
+authserver:
+  hostname: http://localhost:9092
+security:
+  oauth2:
+    resource:
+    # Url que o spring irá utilizar para validadar o token recebido na requisição.
+      userInfoUri: ${authserver.hostname}/user
